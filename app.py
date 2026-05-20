@@ -1,67 +1,68 @@
 import streamlit as st
-from openai import OpenAI
-from dotenv import load_dotenv
-import os
-import httpx
 
-load_dotenv()
+from utils.sanitizer import sanitize_logs
+from utils.prompt_builder import build_analysis_prompt
+from services.ai_service import analyze_logs
 
-api_key = os.getenv("OPENROUTER_API_KEY")
-
-client = OpenAI(
-    api_key=api_key,
-    base_url="https://openrouter.ai/api/v1",
-    http_client=httpx.Client(verify=False)
+st.set_page_config(
+    page_title="AI Log Analyzer",
+    layout="wide"
 )
 
 st.title("AI Log Analyzer")
 
 uploaded_file = st.file_uploader(
-    "Upload a log file",
+    "Upload log file",
     type=["txt", "log"]
 )
 
-if uploaded_file is not None:
+manual_logs = st.text_area(
+    "Or paste logs directly",
+    height=200
+)
 
+log_text = ""
+
+if uploaded_file is not None:
     log_text = uploaded_file.read().decode("utf-8")
 
+elif manual_logs:
+    log_text = manual_logs
+
+if log_text:
+
+    st.subheader("Original Logs")
+
     st.text_area(
-        "Log Preview",
+        "Logs Preview",
         log_text[:5000],
-        height=300
+        height=250
+    )
+
+    sanitized_logs = sanitize_logs(log_text)
+
+    st.subheader("Sanitized Logs")
+
+    st.text_area(
+        "Protected Preview",
+        sanitized_logs[:5000],
+        height=250
     )
 
     if st.button("Analyze Logs"):
 
-        with st.spinner("Analyzing logs..."):
+        with st.spinner("AI is analyzing logs..."):
 
             try:
 
-                response = client.chat.completions.create(
-                    model="deepseek/deepseek-v4-flash:free",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": f"""
-                            Analyze these logs.
-
-                            Identify:
-                            - Errors
-                            - Root cause
-                            - Severity
-                            - Suggested fix
-
-                            Logs:
-                            {log_text[:12000]}
-                            """
-                        }
-                    ]
+                prompt = build_analysis_prompt(
+                    sanitized_logs[:12000]
                 )
 
-                result = response.choices[0].message.content
+                result = analyze_logs(prompt)
 
                 st.subheader("AI Analysis")
-                st.write(result)
+                st.markdown(result)
 
             except Exception as e:
                 st.error(str(e))
