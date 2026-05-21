@@ -231,12 +231,6 @@ to improve accuracy and reduce missed errors.
 
                     chunk_text = chunk["chunk_text"]
 
-                    st.write(
-                        f"""
-Analyzing Chunk {chunk_number}/{len(chunks)}
-"""
-                    )
-
                     prompt = build_analysis_prompt(
                         log_text=chunk_text,
                         chunk_number=chunk_number,
