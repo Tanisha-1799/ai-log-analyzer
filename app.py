@@ -3,9 +3,10 @@ import streamlit as st
 from utils.sanitizer import sanitize_logs
 from utils.prompt_builder import build_analysis_prompt
 from utils.file_handler import extract_text_from_file
-
+from utils.exception_extractor import extract_important_logs
 from utils.chunker import split_logs_into_chunks
 from utils.analyzer import combine_chunk_results
+from utils.stacktrace_extractor import extract_stack_traces
 
 from services.ai_service import analyze_logs
 
@@ -105,6 +106,13 @@ Total Lines: {total_lines}
 
     sanitized_logs = sanitize_logs(log_text)
 
+    # -----------------------------
+    # IMPORTANT LOG EXTRACTION
+    # -----------------------------
+
+    important_logs = extract_important_logs(sanitized_logs)
+    stack_traces = extract_stack_traces(sanitized_logs)
+
     st.subheader("Sanitized Logs")
 
     st.text_area(
@@ -112,6 +120,46 @@ Total Lines: {total_lines}
         sanitized_logs[:5000],
         height=250
     )
+
+    # -----------------------------
+    # IMPORTANT LOGS
+    # -----------------------------
+
+    st.subheader("Important Error Logs")
+
+    if important_logs.strip():
+
+        st.text_area(
+            "Detected Errors / Exceptions",
+            important_logs[:5000],
+            height=250
+        )
+
+    else:
+
+        st.success(
+            "No major exceptions or error patterns detected."
+        )
+
+    # -----------------------------
+    # STACK TRACES
+    # -----------------------------
+
+    st.subheader("Detected Stack Traces")
+
+    if stack_traces.strip():
+
+        st.text_area(
+            "Stack Trace Analysis Input",
+            stack_traces[:5000],
+            height=250
+        )
+
+    else:
+
+        st.success(
+            "No stack traces detected."
+        )     
 
     # -----------------------------
     # CHUNKING INFO
@@ -140,9 +188,30 @@ to improve accuracy and reduce missed errors.
                 # CHUNK CREATION
                 # -----------------------------
 
-                chunks = split_logs_into_chunks(
-                    sanitized_logs
-                )
+                if important_logs.strip():
+
+                    analysis_input = important_logs
+
+                elif stack_traces.strip():
+
+                    analysis_input = stack_traces
+
+                else:
+
+                    analysis_input = sanitized_logs
+
+                if len(analysis_input) < 12000:
+
+                    chunks = [{
+                        "chunk_number": 1,
+                        "chunk_text": analysis_input
+                    }]
+
+                else:
+
+                    chunks = split_logs_into_chunks(
+                        analysis_input
+                    )
 
                 st.info(
                     f"Total Chunks Created: {len(chunks)}"
@@ -175,7 +244,9 @@ Analyzing Chunk {chunk_number}/{len(chunks)}
                     )
 
                     result = analyze_logs(prompt)
-                    #time.sleep(2)   #for handling rate limiting part if initially using a free model
+
+                    # Optional delay for rate limiting
+                    # time.sleep(2)
 
                     all_results.append({
                         "chunk_number": chunk_number,

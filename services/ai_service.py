@@ -46,9 +46,43 @@ def analyze_logs(prompt):
 
     except Exception as e:
 
-        return f"""
-AI Analysis Failed
+        error_message = str(e)
 
-Error:
-{str(e)}
+        # -----------------------------------
+        # RATE LIMIT HANDLING
+        # -----------------------------------
+
+        if "429" in error_message:
+
+            return """
+# AI Analysis Failed
+
+## Rate Limit Reached
+
+The free AI model request limit has been exceeded.
+
+### Possible Reasons
+- Too many chunk requests
+- Daily free quota exhausted
+- Free provider restrictions
+
+### Suggested Fixes
+- Wait for quota reset
+- Reduce chunk count
+- Increase chunk size
+- Add delay between requests
+- Add OpenRouter credits
+- Switch to another model
+"""
+
+        # -----------------------------------
+        # GENERAL ERROR HANDLING
+        # -----------------------------------
+
+        return f"""
+# AI Analysis Failed
+
+## Error Details
+
+{error_message}
 """
