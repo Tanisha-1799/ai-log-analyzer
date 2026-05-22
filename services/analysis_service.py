@@ -1,8 +1,18 @@
-from utils.prompt_builder import build_analysis_prompt
-from utils.chunker import split_logs_into_chunks
-from utils.analyzer import combine_chunk_results
+from utils.prompt_builder import (
+    build_analysis_prompt
+)
 
-from services.ai_service import analyze_logs
+from utils.chunker import (
+    split_logs_into_chunks
+)
+
+from utils.analyzer import (
+    combine_chunk_results
+)
+
+from services.ai_service import (
+    analyze_logs
+)
 
 
 def run_log_analysis(
@@ -12,9 +22,9 @@ def run_log_analysis(
     progress_callback=None
 ):
 
-    # ----------------------------------------
+    # ---------------------------------------------------
     # PRIORITY INPUT SELECTION
-    # ----------------------------------------
+    # ---------------------------------------------------
 
     if important_logs.strip():
 
@@ -28,9 +38,9 @@ def run_log_analysis(
 
         analysis_input = sanitized_logs
 
-    # ----------------------------------------
+    # ---------------------------------------------------
     # CHUNKING
-    # ----------------------------------------
+    # ---------------------------------------------------
 
     if len(analysis_input) < 12000:
 
@@ -47,15 +57,19 @@ def run_log_analysis(
 
     all_results = []
 
-    # ----------------------------------------
+    # ---------------------------------------------------
     # ANALYZE CHUNKS
-    # ----------------------------------------
+    # ---------------------------------------------------
 
     for index, chunk in enumerate(chunks):
 
-        chunk_number = chunk["chunk_number"]
+        chunk_number = chunk[
+            "chunk_number"
+        ]
 
-        chunk_text = chunk["chunk_text"]
+        chunk_text = chunk[
+            "chunk_text"
+        ]
 
         prompt = build_analysis_prompt(
             log_text=chunk_text,
@@ -65,10 +79,36 @@ def run_log_analysis(
 
         result = analyze_logs(prompt)
 
+        # ---------------------------------------------------
+        # AI FAILURE HANDLING
+        # ---------------------------------------------------
+
+        if not result["success"]:
+
+            return {
+                "success": False,
+                "error_type": result[
+                    "error_type"
+                ],
+                "error": result[
+                    "message"
+                ]
+            }
+
+        # ---------------------------------------------------
+        # SUCCESS
+        # ---------------------------------------------------
+
         all_results.append({
             "chunk_number": chunk_number,
-            "analysis": result
+            "analysis": result[
+                "content"
+            ]
         })
+
+        # ---------------------------------------------------
+        # PROGRESS CALLBACK
+        # ---------------------------------------------------
 
         if progress_callback:
 
@@ -76,15 +116,16 @@ def run_log_analysis(
                 (index + 1) / len(chunks)
             )
 
-    # ----------------------------------------
-    # FINAL REPORT
-    # ----------------------------------------
+    # ---------------------------------------------------
+    # FINAL AGGREGATED REPORT
+    # ---------------------------------------------------
 
     final_result = combine_chunk_results(
         all_results
     )
 
     return {
+        "success": True,
         "final_result": final_result,
         "chunk_count": len(chunks)
     }

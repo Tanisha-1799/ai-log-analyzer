@@ -6,13 +6,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# -----------------------------------
+# ---------------------------------------------------
 # API CONFIGURATION
-# -----------------------------------
+# ---------------------------------------------------
 
-api_key = os.getenv("OPENROUTER_API_KEY")
+api_key = os.getenv(
+    "OPENROUTER_API_KEY"
+)
 
-MODEL_NAME = "deepseek/deepseek-v4-flash:free"
+MODEL_NAME = (
+   "deepseek/deepseek-v4-flash:free"
+   #"qwen/qwen3-next-80b-a3b-instruct:free"
+)
 
 client = OpenAI(
     api_key=api_key,
@@ -23,9 +28,9 @@ client = OpenAI(
     )
 )
 
-# -----------------------------------
+# ---------------------------------------------------
 # AI ANALYSIS FUNCTION
-# -----------------------------------
+# ---------------------------------------------------
 
 def analyze_logs(prompt):
 
@@ -42,47 +47,87 @@ def analyze_logs(prompt):
             temperature=0.2
         )
 
-        return response.choices[0].message.content
+        result = (
+            response
+            .choices[0]
+            .message
+            .content
+        )
+
+        # ---------------------------------------------------
+        # SUCCESS RESPONSE
+        # ---------------------------------------------------
+
+        return {
+            "success": True,
+            "content": result
+        }
 
     except Exception as e:
 
         error_message = str(e)
 
-        # -----------------------------------
-        # RATE LIMIT HANDLING
-        # -----------------------------------
+        lower_error = error_message.lower()
 
-        if "429" in error_message:
+        # ---------------------------------------------------
+        # RATE LIMIT
+        # ---------------------------------------------------
 
-            return """
-# AI Analysis Failed
+        if (
+            "429" in lower_error
+            or "rate limit" in lower_error
+            or "quota" in lower_error
+        ):
 
-## Rate Limit Reached
+            return {
+                "success": False,
+                "error_type": "rate_limit",
+                "message": (
+                    "Free AI model quota exceeded."
+                )
+            }
 
-The free AI model request limit has been exceeded.
+        # ---------------------------------------------------
+        # AUTHENTICATION ERROR
+        # ---------------------------------------------------
 
-### Possible Reasons
-- Too many chunk requests
-- Daily free quota exhausted
-- Free provider restrictions
+        if (
+            "401" in lower_error
+            or "unauthorized" in lower_error
+            or "invalid api key" in lower_error
+        ):
 
-### Suggested Fixes
-- Wait for quota reset
-- Reduce chunk count
-- Increase chunk size
-- Add delay between requests
-- Add OpenRouter credits
-- Switch to another model
-"""
+            return {
+                "success": False,
+                "error_type": "authentication",
+                "message": (
+                    "Invalid or missing OpenRouter API key."
+                )
+            }
 
-        # -----------------------------------
-        # GENERAL ERROR HANDLING
-        # -----------------------------------
+        # ---------------------------------------------------
+        # TIMEOUT ERROR
+        # ---------------------------------------------------
 
-        return f"""
-# AI Analysis Failed
+        if (
+            "timeout" in lower_error
+            or "timed out" in lower_error
+        ):
 
-## Error Details
+            return {
+                "success": False,
+                "error_type": "timeout",
+                "message": (
+                    "AI provider request timed out."
+                )
+            }
 
-{error_message}
-"""
+        # ---------------------------------------------------
+        # GENERIC FAILURE
+        # ---------------------------------------------------
+
+        return {
+            "success": False,
+            "error_type": "generic",
+            "message": error_message
+        }
