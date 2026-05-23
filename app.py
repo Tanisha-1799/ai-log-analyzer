@@ -44,6 +44,14 @@ from components.error_analytics import (
     render_error_analytics
 )
 
+from components.incident_insights import (
+    render_incident_insights
+)
+
+from components.export_section import (
+    render_export_section
+)
+
 # ---------------------------------------------------
 # SERVICES
 # ---------------------------------------------------
@@ -66,6 +74,15 @@ from utils.metrics_helper import (
 
 from utils.error_categorizer import (
     categorize_errors
+)
+
+from utils.incident_insights import (
+    generate_incident_insights
+)
+
+from utils.report_exporter import (
+    generate_markdown_report,
+    generate_text_report
 )
 
 # ---------------------------------------------------
@@ -180,18 +197,6 @@ if log_text:
             try:
 
                 # ---------------------------------------------------
-                # ERROR ANALYTICS
-                # ---------------------------------------------------
-
-                category_counts = categorize_errors(
-                    sanitized_logs
-                )
-
-                render_error_analytics(
-                    category_counts
-                )
-
-                # ---------------------------------------------------
                 # PROGRESS BAR
                 # ---------------------------------------------------
 
@@ -208,6 +213,8 @@ if log_text:
                     progress_callback=lambda progress:
                     progress_bar.progress(progress)
                 )
+
+                progress_bar.empty()
 
                 # ---------------------------------------------------
                 # HANDLE AI FAILURE
@@ -240,6 +247,30 @@ if log_text:
                     )
 
                     # ---------------------------------------------------
+                    # ERROR ANALYTICS
+                    # ---------------------------------------------------
+
+                    category_counts = categorize_errors(
+                        sanitized_logs
+                    )
+
+                    render_error_analytics(
+                        category_counts
+                    )
+
+                    # ---------------------------------------------------
+                    # INCIDENT INSIGHTS
+                    # ---------------------------------------------------
+
+                    incident_insights = generate_incident_insights(
+                        sanitized_logs
+                    )
+
+                    render_incident_insights(
+                        incident_insights
+                    )
+
+                    # ---------------------------------------------------
                     # EXECUTIVE SUMMARY
                     # ---------------------------------------------------
 
@@ -255,6 +286,31 @@ if log_text:
 
                     render_analysis_result(
                         final_result
+                    )
+
+                    # ---------------------------------------------------
+                    # EXPORT REPORTS
+                    # ---------------------------------------------------
+
+                    markdown_report = (
+                        generate_markdown_report(
+                            final_result=final_result,
+                            metrics=metrics,
+                            chunk_count=chunk_count
+                        )
+                    )
+
+                    text_report = (
+                        generate_text_report(
+                            final_result=final_result,
+                            metrics=metrics,
+                            chunk_count=chunk_count
+                        )
+                    )
+
+                    render_export_section(
+                        markdown_report=markdown_report,
+                        text_report=text_report
                     )
 
                 # ---------------------------------------------------
