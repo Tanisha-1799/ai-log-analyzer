@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import streamlit as st
 
 # ---------------------------------------------------
@@ -103,10 +106,75 @@ load_css()
 render_header()
 
 # ---------------------------------------------------
-# INPUT
+# VS CODE LOG IMPORT
 # ---------------------------------------------------
 
-log_text = render_upload_section()
+query_params = st.query_params
+
+vscode_mode = (
+    query_params.get("source")
+    == "vscode"
+)
+
+vscode_logs = ""
+
+if vscode_mode:
+
+    temp_file_path = os.path.join(
+        tempfile.gettempdir(),
+        "ai_log_analyzer_logs.txt"
+    )
+
+    if os.path.exists(temp_file_path):
+
+        with open(
+            temp_file_path,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            vscode_logs = file.read()
+
+# ---------------------------------------------------
+# INPUT SECTION
+# ---------------------------------------------------
+
+uploaded_logs = render_upload_section()
+
+# ---------------------------------------------------
+# PRIORITY:
+# VS CODE LOGS > UPLOADED LOGS
+# ---------------------------------------------------
+
+log_text = ""
+
+if vscode_logs:
+
+    log_text = vscode_logs
+
+elif uploaded_logs:
+
+    log_text = uploaded_logs
+
+# ---------------------------------------------------
+# VS CODE SUCCESS MESSAGE
+# ---------------------------------------------------
+
+if vscode_logs:
+
+    st.success(
+        "Logs imported from VS Code"
+    )
+
+    st.markdown(
+        "## Imported Logs"
+    )
+
+    st.text_area(
+        label="Imported VS Code Logs",
+        value=vscode_logs,
+        height=300
+    )
 
 # ---------------------------------------------------
 # PROCESS LOGS
@@ -185,10 +253,16 @@ if log_text:
     # ANALYZE BUTTON
     # ---------------------------------------------------
 
-    if st.button(
+    analyze_clicked = st.button(
         "Analyze Logs",
         use_container_width=True
-    ):
+    )
+
+    # ---------------------------------------------------
+    # RUN ANALYSIS
+    # ---------------------------------------------------
+
+    if analyze_clicked:
 
         with st.spinner(
             "AI is analyzing logs..."

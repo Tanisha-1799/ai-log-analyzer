@@ -1,16 +1,3 @@
-This should now become your “single source of truth” document for the project.
-
-The goal of this file is:
-
-* maintain long-term project direction
-* preserve architectural decisions
-* help future development continuity
-* guide sprint execution
-* maintain product vision
-
-Here’s the upgraded version.
-
-````md id="6mxyxp"
 # PROJECT_CONTEXT.md
 
 # AI Log Analyzer — Project Context Document
@@ -19,15 +6,18 @@ Here’s the upgraded version.
 
 # Project Overview
 
-AI Log Analyzer is a privacy-aware AI debugging assistant designed to help developers, QA engineers, DevOps teams, and support engineers analyze logs intelligently using Large Language Models (LLMs).
+AI Log Analyzer is a privacy-aware AI debugging assistant designed to help developers, QA engineers, DevOps teams, and support engineers analyze logs using Large Language Models (LLMs).
 
-The project is being built as:
-- a practical AI engineering portfolio project
-- an open-source developer tool
-- a real-world AI productivity application
+The project combines:
+- AI-powered reasoning
+- intelligent log preprocessing
+- structured incident analysis
+- developer-focused workflows
+- incident intelligence concepts
 
 The long-term vision is to evolve the project into:
-> An AI-powered incident investigation and debugging platform.
+
+> An AI-powered incident investigation and developer productivity platform.
 
 ---
 
@@ -37,154 +27,187 @@ Engineering teams spend significant time:
 - manually reading logs
 - identifying stack traces
 - debugging production failures
-- summarizing incidents
-- searching recurring errors
-- investigating root causes
+- analyzing downstream service issues
+- investigating recurring incidents
+- summarizing root causes
+- correlating failures across systems
 
 Large log files are:
-- difficult to analyze manually
-- repetitive to debug
-- time-consuming during incidents
+- noisy
+- repetitive
+- difficult to analyze quickly
+- time-consuming during production incidents
 
 AI Log Analyzer aims to reduce debugging effort through:
 - AI-powered log understanding
-- intelligent preprocessing
-- privacy-aware sanitization
-- structured incident summaries
+- smart preprocessing
+- important failure extraction
+- structured AI incident summaries
+- developer-friendly diagnostics
 
 ---
 
-# Current Project Stage
+# Current Project Status
 
 ## Current Phase
-Sprint 1 — MVP Foundation
+Advanced MVP / Pre-Open-Source Stage
 
-## Current Status
-Completed:
-- Python environment setup
-- Streamlit UI setup
-- OpenRouter integration
-- Basic file upload
-- AI log analysis flow
-- Initial prompt engineering
-- SSL issue resolution
-- Local development environment
+---
 
-In Progress:
-- Project architecture refinement
-- Documentation improvements
-- Sprint planning
-- Privacy-aware workflow design
+# Currently Implemented
 
-Upcoming:
-- Sanitization engine
+## AI Analysis Features
+- AI-generated incident analysis
+- Root cause analysis
+- Severity estimation
+- Suggested remediation steps
+- Structured AI response aggregation
+- Multi-pass chunk analysis
+
+---
+
+## Smart Log Processing
+- Important error extraction
+- Noise filtering
+- Stack trace prioritization
 - Large log chunking
-- Structured AI responses
-- Multi-format support
+- Context-aware preprocessing
+- Failure pattern detection
 
 ---
 
-# Project Objectives
-
-## Technical Objectives
-- Learn AI engineering hands-on
-- Build production-style AI workflows
-- Integrate LLM APIs effectively
-- Design scalable AI architecture
-- Develop privacy-aware AI tooling
-
-## Product Objectives
-- Build a useful engineering productivity tool
-- Solve real developer problems
-- Create open-source quality software
-- Design extension-ready architecture
-
-## Career Objectives
-- Build strong AI engineering portfolio projects
-- Develop public technical projects
-- Create LinkedIn/GitHub showcase work
-- Transition toward AI-focused engineering roles
+## Incident Intelligence
+- API failure detection
+- Timeout detection
+- Authentication issue detection
+- Validation failure detection
+- Business failure identification
+- Exception frequency tracking
 
 ---
 
-# Target Users
+## UI Features
+- KPI dashboard
+- Incident severity ribbons
+- Error analytics cards
+- Incident intelligence section
+- Expandable technical diagnostics
+- Exportable reports
 
-Primary users:
-- Developers
-- QA Engineers
-- DevOps Engineers
-- Support Engineers
-- SRE Teams
+---
 
-Potential future users:
-- Engineering managers
-- Incident response teams
-- Platform teams
-- Enterprise support teams
+## Export Features
+- Markdown incident reports
+- Plain text incident reports
+
+---
+
+## AI Infrastructure
+- OpenRouter integration
+- OpenAI-compatible architecture
+- Prompt-engineering pipeline
+- Chunk aggregation engine
+- Structured report parsing
+
+---
+
+# Current Architecture
+
+```text
+Upload Logs
+    ↓
+Preprocessing Pipeline
+    ↓
+Noise Reduction
+    ↓
+Important Error Extraction
+    ↓
+Stack Trace Prioritization
+    ↓
+Smart Chunking
+    ↓
+Prompt-Engineered AI Analysis
+    ↓
+Chunk Aggregation
+    ↓
+Structured Incident Report
+    ↓
+Incident Intelligence Dashboard
+    ↓
+Exportable Reports
+```
+
+---
+
+# Current Technical Stack
+
+| Area | Technology |
+|---|---|
+| Language | Python |
+| UI | Streamlit |
+| AI Provider | OpenRouter |
+| AI Compatibility | OpenAI API Style |
+| HTTP Client | HTTPX |
+| Environment | VS Code |
+| Data Processing | Python Utilities |
+| Secrets Handling | Python Dotenv |
 
 ---
 
 # Design Philosophy
 
 The project should:
-- solve a real engineering problem
-- prioritize usefulness over complexity
-- improve incrementally
-- follow practical engineering patterns
-- remain open-source friendly
+- solve real engineering problems
+- prioritize practical usefulness
+- evolve incrementally
+- remain modular and extensible
+- demonstrate real AI engineering patterns
 - support privacy-first workflows
-- demonstrate real AI engineering capability
+- remain open-source friendly
 
 Key principle:
+
 > Build small → improve continuously → ship consistently.
 
 ---
 
-# Product Direction
+# Engineering Direction
 
 The project is intentionally evolving beyond:
-> “Upload logs and get AI summaries.”
+
+> "Upload logs and get AI summaries."
 
 Toward:
-> “AI-powered debugging and incident investigation.”
+
+> "AI-powered debugging and incident investigation."
 
 Future positioning ideas:
 - AI Debugging Assistant
 - AI Incident Investigator
-- AI Log Intelligence Tool
-- AI Failure Analyzer
+- AI Log Intelligence Platform
+- AI Reliability Assistant
 
 ---
 
-# Architecture Direction
+# Prompt Engineering Strategy
 
-## Current MVP Workflow
+Prompt engineering is considered a core system capability.
 
-```text
-Upload Logs
-    ↓
-Send to LLM
-    ↓
-Receive Analysis
-```
+The AI prompts are designed to prioritize:
+- customer-impacting failures
+- business transaction failures
+- downstream dependency issues
+- repeated 4XX failures
+- 5XX infrastructure failures
+- authentication failures
+- API contract mismatches
+- production instability
 
----
-
-# Planned Intelligent Workflow
-
-```text
-Upload Logs
-    ↓
-Sanitize Sensitive Data
-    ↓
-Chunk Large Files
-    ↓
-Extract Important Errors
-    ↓
-AI Analysis
-    ↓
-Structured Incident Report
-```
+The prompts intentionally:
+- ignore harmless INFO noise
+- reduce hallucinations
+- avoid fake root causes
+- focus on actionable engineering insights
 
 ---
 
@@ -192,17 +215,16 @@ Structured Incident Report
 
 Logs may contain:
 - API keys
-- tokens
+- access tokens
 - passwords
-- emails
 - internal URLs
 - IP addresses
 - sensitive enterprise information
 
 Future versions must support:
 - local sanitization
-- regex masking
-- configurable privacy filters
+- configurable masking
+- regex-based protection
 - secure preprocessing pipelines
 
 Example:
@@ -221,120 +243,138 @@ Privacy-awareness is considered a core product feature.
 
 ---
 
-# Planned Core Features
+# Smart Processing Direction
 
-## AI Analysis Features
-- Root cause analysis
-- Error extraction
-- Severity estimation
-- Suggested fixes
-- Exception summarization
-- Failure clustering
-- Semantic log understanding
+## Important Error Extraction
 
----
+The preprocessing layer prioritizes:
+- exceptions
+- HTTP failures
+- timeout patterns
+- downstream failures
+- authentication issues
+- infrastructure instability
+- validation failures
+- business transaction failures
 
-# Smart Processing Features
+This reduces:
+- token usage
+- AI noise
+- irrelevant analysis
 
-## Large Log Handling
-Future versions should support:
-- smart chunking
-- chunk-level analysis
-- multi-pass summarization
-- context-aware aggregation
-
-Reason:
-LLMs have token/context limitations.
-
-The system should ensure:
-- full log coverage
-- scalable analysis
-- improved reliability
+while improving:
+- signal quality
+- analysis accuracy
+- business relevance
 
 ---
 
-# Structured AI Output
+# Chunking Strategy
 
-Future responses should move from:
-- unstructured paragraphs
+Large logs are split into manageable chunks to:
+- avoid token overflow
+- improve scalability
+- preserve analysis reliability
 
-toward:
-- structured incident reports
+Future improvements may include:
+- context-preserving chunking
+- stack trace continuity
+- semantic chunking
+- adaptive chunk sizing
 
-Example:
+---
 
-```text
-Severity: HIGH
+# Structured AI Reporting
 
-Root Cause:
-Database timeout
+The project is moving toward standardized engineering-style incident reports.
 
-Detected Errors:
-- SQLTimeoutException
-- Connection pool exhaustion
-
-Suggested Fix:
-Increase DB pool size
-```
+Current structure includes:
+- severity
+- critical errors
+- root cause analysis
+- suspicious patterns
+- suggested fixes
+- final recommendations
 
 This improves:
 - readability
-- automation potential
+- debugging workflows
 - export capability
-- enterprise integration
+- future automation potential
 
 ---
 
-# Multi-Input Direction
+# VS Code Extension Vision
 
-Planned supported inputs:
-- .txt
-- .log
-- .docx
-- pasted text input
-- clipboard analysis
+A future VS Code extension is planned to support real-world engineering workflows.
 
-Future ideas:
-- zip upload support
-- drag & drop upload
-- real-time log streaming
-
----
-
-# Extension Vision
-
-Long-term direction includes:
-- Chrome extension
-- VS Code extension
-- clipboard analyzer
-- right-click AI analysis
-
-Potential workflow:
+Target workflow:
 
 ```text
-Highlight Logs
+Copy Logs from ELK/Splunk/Grafana
     ↓
-Right Click
+Paste Inside VS Code
     ↓
 Analyze with AI
+    ↓
+Receive Structured Incident Summary
 ```
 
-This improves:
-- usability
-- discoverability
-- developer adoption
+Potential features:
+- instant AI analysis
+- right-click log analysis
+- inline debugging summaries
+- stack trace highlighting
+- clipboard monitoring
+- exportable reports
+
+This direction aligns strongly with:
+- production support workflows
+- developer productivity tooling
+- incident response workflows
+
+---
+
+# Planned Future Features
+
+## AI Features
+- anomaly detection
+- semantic log search
+- AI debugging copilots
+- failure clustering
+- incident prediction
+- multi-agent analysis
+
+---
+
+## Developer Productivity Features
+- PDF export
+- incident timeline generation
+- Jira integration
+- Slack integration
+- CI/CD integrations
+- multi-log correlation
+
+---
+
+## Enterprise Features
+- local/offline AI support
+- role-based access
+- audit logging
+- secure deployment
+- team collaboration workflows
 
 ---
 
 # Open Source Direction
 
-Project goals:
-- open-source development
-- community contributions
-- modular architecture
-- provider-agnostic AI support
+The project is being structured as:
+- modular
+- extensible
+- contributor-friendly
+- provider-agnostic
 
-Future AI provider support:
+Future AI provider support may include:
 - OpenAI
 - OpenRouter
 - Anthropic
@@ -347,61 +387,56 @@ Future AI provider support:
 Development follows:
 - weekly sprint cycles
 - incremental feature delivery
-- public learning approach
-- portfolio-driven engineering
+- public learning
+- practical engineering implementation
 
 Each sprint should:
-- deliver one meaningful improvement
-- include documentation updates
-- produce demo-ready progress
+- deliver meaningful functionality
+- improve architecture
+- maintain demo readiness
+- support portfolio visibility
 
 ---
 
-# Sprint Cadence
-
-Sprint Duration:
-1 week
-
-Recommended workflow:
-- Monday → planning
-- Tuesday–Friday → implementation
-- Saturday → demo/post/update
-- Sunday → review + next sprint planning
-
----
-
-# Engineering Priorities
-
-Current priorities:
+# Current Engineering Priorities
 
 ## High Priority
-- Sanitization layer
-- Chunking architecture
-- Structured AI responses
-- Better prompt engineering
-
-## Medium Priority
-- Improved UI/UX
-- Export functionality
-- Error categorization
-- Multi-format support
-
-## Future Priority
-- Extension development
-- Deployment
-- Authentication
-- Collaboration features
+- VS Code extension MVP
+- sanitization engine
+- improved prompt engineering
+- structured AI consistency
+- better aggregation quality
 
 ---
 
-# Long-Term AI Vision
+## Medium Priority
+- PDF export
+- deployment
+- screenshots/demo assets
+- GitHub cleanup
+- extension integration
 
-Potential advanced AI capabilities:
-- anomaly detection
-- incident prediction
-- semantic log search
-- AI copilots for debugging
-- multi-agent incident investigation
+---
+
+## Future Priority
+- local AI support
+- real-time log streaming
+- collaborative workflows
+- semantic incident search
+
+---
+
+# Long-Term Vision
+
+Transform AI Log Analyzer into:
+
+> An AI-powered engineering incident investigation platform.
+
+Potential future evolution:
+- SaaS platform
+- enterprise deployment
+- AI observability assistant
+- AI reliability engineering platform
 
 ---
 
@@ -409,10 +444,11 @@ Potential advanced AI capabilities:
 
 The project should eventually demonstrate:
 - practical AI engineering
-- production-style workflows
-- privacy-aware AI design
-- scalable LLM integration
-- developer productivity enhancement
+- scalable LLM workflows
+- privacy-aware architecture
+- production-style engineering
+- useful developer tooling
+- real-world AI integration capability
 
 ---
 
@@ -423,7 +459,7 @@ This project is part of a broader journey toward:
 - building practical AI products
 - learning production AI architecture
 - developing strong public engineering projects
-- building useful developer tooling
+- creating useful developer productivity tools
 
 ---
 
@@ -431,8 +467,8 @@ This project is part of a broader journey toward:
 
 Primary focus:
 - consistency over perfection
-- iterative improvement
+- iterative improvements
 - practical engineering
-- learning through building
 - shipping real features
-````
+- learning through building
+- maintaining momentum

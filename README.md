@@ -1,16 +1,3 @@
-Here’s a much stronger and more industry-focused version of your `README.md`.
-
-This version positions the project as:
-
-* an AI engineering product
-* privacy-aware tooling
-* open-source ready
-* extension-ready
-* developer-focused
-
-You can directly replace your current README with this.
-
-````md
 # AI Log Analyzer
 
 AI Log Analyzer is a privacy-aware AI debugging assistant designed to help developers, QA engineers, DevOps teams, and support engineers analyze application logs faster using Large Language Models (LLMs).
@@ -60,20 +47,50 @@ The goal is not just to build another AI demo, but to create:
 
 ---
 
-# Current Features (Sprint 1)
+# Current Features
 
-## Implemented
-- Upload `.txt` and `.log` files
-- Log preview UI
-- AI-powered log analysis
-- OpenRouter/OpenAI-compatible integration
-- Streamlit-based interface
-
-## Current Analysis Capabilities
-- Error summaries
-- Root cause explanation
+## AI-Powered Log Analysis
+- AI-generated incident summaries
+- Root cause analysis
+- Suggested remediation steps
 - Severity estimation
-- Suggested fixes
+- Structured incident reports
+
+## Smart Log Processing
+- Important error extraction
+- Stack trace prioritization
+- Large log chunking
+- Noise reduction
+- Context-aware preprocessing
+
+## Incident Intelligence
+- API failure detection
+- Timeout detection
+- Authentication issue tracking
+- Validation error analysis
+- Exception frequency insights
+
+## Developer Productivity Features
+- Markdown report export
+- Text report export
+- Technical diagnostics view
+- Sanitized log preview
+- Chunk analysis tracking
+
+## UI Features
+- Incident severity ribbons
+- KPI dashboards
+- Error analytics cards
+- Expandable technical sections
+- Responsive Streamlit layout
+
+## AI Infrastructure
+- OpenRouter integration
+- OpenAI-compatible architecture
+- Prompt engineering pipeline
+- Multi-pass chunk analysis
+- Structured AI response aggregation
+
 
 ---
 
@@ -180,25 +197,21 @@ Current MVP flow:
 ```text
 Upload Logs
     ↓
-Send to LLM
+Preprocessing Pipeline
     ↓
-Receive Analysis
-```
-
-Planned intelligent workflow:
-
-```text
-Upload Logs
+Sensitive Data Sanitization
     ↓
-Sanitize Sensitive Data
+Important Error Extraction
     ↓
-Chunk Large Files
+Smart Chunking Engine
     ↓
-Extract Important Errors
+Multi-Pass AI Analysis
     ↓
-AI Analysis
+Structured Incident Aggregation
     ↓
-Structured Incident Report
+Incident Intelligence Dashboard
+    ↓
+Exportable Incident Reports
 ```
 
 ---
@@ -227,38 +240,54 @@ ai-log-analyzer/
 ├── README.md
 ├── .env
 │
+├── components/
+│   ├── ai_failure.py
+│   ├── alerts.py
+│   ├── analysis_result.py
+│   ├── analysis_summary.py
+│   ├── error_analytics.py
+│   ├── export_section.py
+│   ├── header.py
+│   ├── incident_cards.py
+│   ├── incident_insights.py
+│   ├── metrics.py
+│   ├── styles.py
+│   ├── technical_details.py
+│   ├── ui_warnings.py
+│   └── upload_section.py
+│
+├── config
+├── services/
+│   ├── ai_service.py
+│   ├── analysis_service.py
+│   └── preprocessing_service.py
+│
+├── utils/
+│   ├── analyzer.py
+│   ├── chunker.py
+│   ├── doc_reader.py
+│   ├── error_categorizer.py
+│   ├── exception_extractor.py
+│   ├── file_handler.py
+│   ├── incident_insights.py
+│   ├── metrics_helper.py
+│   ├── prompt_builder.py
+│   ├── report_exporter.py
+│   ├── report_formatter.py
+│   ├── report_parser.py
+│   ├── sanitizer.py
+│   └── stacktrace_extractor.py
+│
 ├── sample_logs/
+├── models/
 │
 ├── docs/
 │   ├── PROJECT_CONTEXT.md
-│   ├── SPRINT_PLAN.md
-│
-├── utils/
-│   ├── sanitizer.py
-│   ├── chunker.py
-│   ├── parser.py
+│   └── SPRINT_PLAN.md
 │
 └── reports/
+...
 ```
-
----
-
-# Running The Application
-
-## Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Start Streamlit App
-
-```bash
-python -m streamlit run app.py
-```
-
 ---
 
 # Development Philosophy
@@ -316,7 +345,40 @@ Future support may include:
 - Anthropic
 - Ollama/local models
 
+
+# VS Code Extension Vision
+
+A planned VS Code extension will allow engineers to:
+
+- Paste logs directly from ELK/Splunk/Grafana
+- Analyze logs without leaving the editor
+- Generate AI incident summaries instantly
+- Highlight failures and stack traces
+- Improve debugging workflows
+
+This aligns with real-world developer and production-support workflows.
+
+
 ---
+# Demo Scenarios
+
+Sample logs are included for:
+- payment gateway failures
+- downstream API timeouts
+- Kafka/MQ failures
+- authentication failures
+- validation errors
+
+These examples demonstrate the AI analysis workflow and incident reporting capabilities.
+
+# Screenshots
+
+Coming soon:
+- dashboard screenshots
+- AI incident reports
+- analytics UI
+- VS Code extension demo
+
 
 # Learning Goals Behind This Project
 
