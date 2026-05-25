@@ -1,14 +1,81 @@
 import re
 
 
-def extract_section(report, section_name):
+def parse_analysis_report(report):
 
-    pattern = rf"## {section_name}\s*(.*?)(?=\n## |\Z)"
+    failures = []
+
+    blocks = report.split("---")
+
+    for block in blocks:
+
+        block = block.strip()
+
+        if not block:
+            continue
+
+        failure_data = {
+
+            "failure": extract_field(
+                block,
+                "FAILURE"
+            ),
+
+            "service": extract_field(
+                block,
+                "SERVICE"
+            ),
+
+            "severity": extract_field(
+                block,
+                "SEVERITY"
+            ),
+
+            "root_cause": extract_field(
+                block,
+                "ROOT CAUSE"
+            ),
+
+            "impact": extract_field(
+                block,
+                "IMPACT"
+            ),
+
+            "evidence": extract_field(
+                block,
+                "EVIDENCE"
+            ),
+
+            "recommendation": extract_field(
+                block,
+                "RECOMMENDATION"
+            )
+        }
+
+        # Skip empty blocks
+
+        if failure_data["failure"]:
+
+            failures.append(
+                failure_data
+            )
+
+    return {
+        "failures": failures
+    }
+
+
+def extract_field(
+    text,
+    field_name
+):
+
+    pattern = rf"{field_name}:\s*(.*?)(?=\n[A-Z ]+:|\Z)"
 
     match = re.search(
         pattern,
-        report,
-        re.DOTALL | re.IGNORECASE
+        text,
+        re.DOTALL
     )
 
     if match:
@@ -16,44 +83,3 @@ def extract_section(report, section_name):
         return match.group(1).strip()
 
     return ""
-
-
-def parse_analysis_report(report):
-
-    return {
-
-        "severity": extract_section(
-            report,
-            "Overall Severity"
-        ),
-
-        "critical_errors": extract_section(
-            report,
-            "Critical Errors"
-        ),
-
-        "root_cause": extract_section(
-            report,
-            "Root Cause Analysis"
-        ),
-
-        "suggested_fixes": extract_section(
-            report,
-            "Suggested Fixes"
-        ),
-
-        "suspicious_patterns": extract_section(
-            report,
-            "Suspicious Patterns"
-        ),
-
-        "final_summary": extract_section(
-            report,
-            "Final Summary"
-        ),
-
-        "recommendations": extract_section(
-            report,
-            "Final Recommendation"
-        )
-    }

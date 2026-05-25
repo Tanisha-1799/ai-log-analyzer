@@ -70,22 +70,22 @@ def load_css():
     --------------------------------------------------- */
 
     .kpi-card {
-        padding: 1.2rem;
-        border-radius: 14px;
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
+        padding: 1.4rem;
+        border-radius: 18px;
+        background-color: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
         text-align: center;
         margin-bottom: 1rem;
     }
 
     .kpi-title {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         opacity: 0.75;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.7rem;
     }
 
     .kpi-value {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 700;
     }
 
@@ -108,12 +108,44 @@ def load_css():
     }
 
     /* ---------------------------------------------------
+    SECTION HEADINGS
+    --------------------------------------------------- */
+
+    h2 {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 0.8rem;
+    }
+
+    /* ---------------------------------------------------
+    EXPANDERS
+    --------------------------------------------------- */
+
+    .streamlit-expanderHeader {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    /* ---------------------------------------------------
     SMALL TEXT
     --------------------------------------------------- */
 
     .small-muted {
         opacity: 0.7;
         font-size: 0.9rem;
+    }
+
+    /* ---------------------------------------------------
+    DIVIDER SPACING
+    --------------------------------------------------- */
+
+    hr {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
     </style>

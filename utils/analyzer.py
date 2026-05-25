@@ -6,36 +6,78 @@ import re
 # ---------------------------------------------------
 
 NOISE_LINES = [
+
     "none detected",
     "no issues found",
     "no suspicious patterns observed",
     "not applicable",
-    "no clear root cause identified",
     "overall logs appear stable",
-    "no fixes suggested",
+    "no actionable fixes suggested",
     "no major critical failures detected",
     "no suspicious patterns detected",
-    "no actionable fixes suggested"
+    "no clear root cause identified"
 ]
 
 
 # ---------------------------------------------------
-# HELPER
+# SECTION EXTRACTION
 # ---------------------------------------------------
 
-def extract_section(content, section_name):
+SECTION_ALIASES = {
 
-    pattern = rf"(?:#+\s*)?{section_name}\s*(.*?)(?=\n#+\s|\Z)"
+    "critical_errors": [
+        "Critical Errors",
+        "Failures",
+        "Major Failures"
+    ],
 
-    match = re.search(
-        pattern,
-        content,
-        re.DOTALL | re.IGNORECASE
-    )
+    "root_cause": [
+        "Root Cause Analysis",
+        "Root Cause"
+    ],
 
-    if match:
+    "severity": [
+        "Overall Severity",
+        "Severity",
+        "Severity Level"
+    ],
 
-        return match.group(1).strip()
+    "suggested_fixes": [
+        "Suggested Fixes",
+        "Fixes",
+        "Recommendations"
+    ],
+
+    "suspicious_patterns": [
+        "Suspicious Patterns"
+    ],
+
+    "final_summary": [
+        "Final Summary",
+        "Summary"
+    ]
+}
+
+
+# ---------------------------------------------------
+# FLEXIBLE SECTION EXTRACTOR
+# ---------------------------------------------------
+
+def extract_section(content, aliases):
+
+    for section_name in aliases:
+
+        pattern = rf"(?:#+\s*)?{section_name}\s*(.*?)(?=\n#+\s|\Z)"
+
+        match = re.search(
+            pattern,
+            content,
+            re.DOTALL | re.IGNORECASE
+        )
+
+        if match:
+
+            return match.group(1).strip()
 
     return ""
 
@@ -60,9 +102,9 @@ def clean_and_deduplicate(text):
 
         lower_line = stripped.lower()
 
-        # ---------------------------------------------
-        # REMOVE GENERIC / NOISE OUTPUT
-        # ---------------------------------------------
+        # ---------------------------------------------------
+        # REMOVE NOISE
+        # ---------------------------------------------------
 
         if any(
             noise in lower_line
@@ -71,17 +113,17 @@ def clean_and_deduplicate(text):
 
             continue
 
-        # ---------------------------------------------
-        # REMOVE MARKDOWN SEPARATORS
-        # ---------------------------------------------
+        # ---------------------------------------------------
+        # REMOVE SEPARATORS
+        # ---------------------------------------------------
 
         if stripped in ["---", "***"]:
 
             continue
 
-        # ---------------------------------------------
-        # DEDUPLICATION
-        # ---------------------------------------------
+        # ---------------------------------------------------
+        # REMOVE DUPLICATES
+        # ---------------------------------------------------
 
         if lower_line not in seen:
 
@@ -93,26 +135,7 @@ def clean_and_deduplicate(text):
 
 
 # ---------------------------------------------------
-# SEVERITY AGGREGATION
-# ---------------------------------------------------
-
-def calculate_highest_severity(severity_text):
-
-    text = severity_text.lower()
-
-    if "high" in text:
-
-        return "High"
-
-    if "medium" in text:
-
-        return "Medium"
-
-    return "Low"
-
-
-# ---------------------------------------------------
-# FORMAT BULLETS
+# BULLET FORMATTER
 # ---------------------------------------------------
 
 def format_as_bullets(text):
@@ -121,11 +144,9 @@ def format_as_bullets(text):
 
         return ""
 
-    lines = text.splitlines()
-
     formatted = []
 
-    for line in lines:
+    for line in text.splitlines():
 
         stripped = line.strip()
 
@@ -145,6 +166,31 @@ def format_as_bullets(text):
 
 
 # ---------------------------------------------------
+# SEVERITY AGGREGATION
+# ---------------------------------------------------
+
+def calculate_highest_severity(text):
+
+    severity_text = text.lower()
+
+    if any(word in severity_text for word in [
+        "critical",
+        "high"
+    ]):
+
+        return "High"
+
+    if any(word in severity_text for word in [
+        "medium",
+        "moderate"
+    ]):
+
+        return "Medium"
+
+    return "Low"
+
+
+# ---------------------------------------------------
 # MAIN AGGREGATOR
 # ---------------------------------------------------
 
@@ -159,19 +205,14 @@ No analysis results generated.
 """
 
     critical_errors = []
-
     root_causes = []
-
     severity_levels = []
-
     suggested_fixes = []
-
     suspicious_patterns = []
-
     final_summaries = []
 
     # ---------------------------------------------------
-    # EXTRACT SECTIONS
+    # PROCESS CHUNKS
     # ---------------------------------------------------
 
     for result in all_results:
@@ -188,42 +229,54 @@ No analysis results generated.
         critical_errors.append(
             extract_section(
                 analysis,
-                "Critical Errors"
+                SECTION_ALIASES[
+                    "critical_errors"
+                ]
             )
         )
 
         root_causes.append(
             extract_section(
                 analysis,
-                "Root Cause"
+                SECTION_ALIASES[
+                    "root_cause"
+                ]
             )
         )
 
         severity_levels.append(
             extract_section(
                 analysis,
-                "Severity Level"
+                SECTION_ALIASES[
+                    "severity"
+                ]
             )
         )
 
         suggested_fixes.append(
             extract_section(
                 analysis,
-                "Suggested Fixes"
+                SECTION_ALIASES[
+                    "suggested_fixes"
+                ]
             )
         )
 
         suspicious_patterns.append(
             extract_section(
                 analysis,
-                "Suspicious Patterns"
+                SECTION_ALIASES[
+                    "suspicious_patterns"
+                ]
             )
         )
 
         final_summaries.append(
             extract_section(
                 analysis,
-                "Final Summary"
+                SECTION_ALIASES[
+                    "final_summary"
+                ]
             )
         )
 
@@ -231,48 +284,34 @@ No analysis results generated.
     # CLEAN DATA
     # ---------------------------------------------------
 
-    critical_errors = clean_and_deduplicate(
-        "\n".join(critical_errors)
-    )
-
-    root_causes = clean_and_deduplicate(
-        "\n".join(root_causes)
-    )
-
-    suggested_fixes = clean_and_deduplicate(
-        "\n".join(suggested_fixes)
-    )
-
-    suspicious_patterns = clean_and_deduplicate(
-        "\n".join(suspicious_patterns)
-    )
-
-    final_summaries = clean_and_deduplicate(
-        "\n".join(final_summaries)
-    )
-
-    # ---------------------------------------------------
-    # FORMAT OUTPUT
-    # ---------------------------------------------------
-
     critical_errors = format_as_bullets(
-        critical_errors
+        clean_and_deduplicate(
+            "\n".join(critical_errors)
+        )
     )
 
     root_causes = format_as_bullets(
-        root_causes
+        clean_and_deduplicate(
+            "\n".join(root_causes)
+        )
     )
 
     suggested_fixes = format_as_bullets(
-        suggested_fixes
+        clean_and_deduplicate(
+            "\n".join(suggested_fixes)
+        )
     )
 
     suspicious_patterns = format_as_bullets(
-        suspicious_patterns
+        clean_and_deduplicate(
+            "\n".join(suspicious_patterns)
+        )
     )
 
     final_summaries = format_as_bullets(
-        final_summaries
+        clean_and_deduplicate(
+            "\n".join(final_summaries)
+        )
     )
 
     # ---------------------------------------------------
@@ -282,10 +321,6 @@ No analysis results generated.
     final_severity = calculate_highest_severity(
         "\n".join(severity_levels)
     )
-
-    # ---------------------------------------------------
-    # SEVERITY BADGE
-    # ---------------------------------------------------
 
     severity_emoji = {
         "High": "🔴",
@@ -333,10 +368,10 @@ No analysis results generated.
         )
 
     # ---------------------------------------------------
-    # FINAL CONSOLIDATED REPORT
+    # FINAL REPORT
     # ---------------------------------------------------
 
-    final_report = f"""
+    return f"""
 # AI Incident Analysis
 
 ## Overall Severity
@@ -383,5 +418,3 @@ No analysis results generated.
 - Review recurring validation failures
 - Monitor repeated business error patterns
 """
-
-    return final_report

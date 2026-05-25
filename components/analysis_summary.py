@@ -27,11 +27,34 @@ def render_incident_ribbon(
 
         label = "🟢 Low Incident Risk"
 
-    st.markdown(f"""
-    <div class="{ribbon_class}">
-        {label}
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div class="{ribbon_class}">
+            {label}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# ---------------------------------------------------
+# AI CONFIDENCE
+# ---------------------------------------------------
+
+def calculate_ai_confidence(
+    chunk_count,
+    important_error_count
+):
+
+    if chunk_count > 5:
+
+        return "Medium"
+
+    if important_error_count == 0:
+
+        return "Medium"
+
+    return "High"
 
 
 # ---------------------------------------------------
@@ -52,43 +75,75 @@ def render_analysis_summary(
         important_error_count
     )
 
-    ai_confidence = "High"
+    ai_confidence = calculate_ai_confidence(
+        chunk_count,
+        important_error_count
+    )
 
-    if chunk_count > 3:
+    st.markdown(
+        f"""
+        <div class="summary-card">
 
-        ai_confidence = "Medium"
+            <h3 style="
+                margin-top: 0;
+                margin-bottom: 1rem;
+            ">
+                Executive Summary
+            </h3>
 
-    st.markdown(f"""
-    <div class="summary-card">
+            <div style="
+                line-height: 1.7;
+                font-size: 1rem;
+            ">
 
-    <h3>Executive Summary</h3>
+                AI analysis identified potential application,
+                downstream dependency, validation,
+                authentication, or infrastructure-related failures
+                from the submitted logs.
 
-    <p>
-    AI analysis detected potential application,
-    downstream, validation, or infrastructure-related failures.
-    </p>
+                <br><br>
 
-    <br>
+                <b>Analysis Metrics</b>
 
-    <ul>
-        <li><b>Important Errors:</b> {important_error_count}</li>
-        <li><b>Stack Traces:</b> {stack_trace_count}</li>
-        <li><b>Chunks Processed:</b> {chunk_count}</li>
-        <li><b>AI Confidence:</b> {ai_confidence}</li>
-    </ul>
+                <ul>
+                    <li>
+                        <b>Important Errors:</b>
+                        {important_error_count}
+                    </li>
 
-    <br>
+                    <li>
+                        <b>Stack Traces:</b>
+                        {stack_trace_count}
+                    </li>
 
-    <b>Analysis Coverage:</b>
+                    <li>
+                        <b>Chunks Processed:</b>
+                        {chunk_count}
+                    </li>
 
-    <ul>
-        <li>Business failures</li>
-        <li>Downstream/API failures</li>
-        <li>HTTP issues</li>
-        <li>Validation failures</li>
-        <li>Recurring patterns</li>
-        <li>Suggested fixes</li>
-    </ul>
+                    <li>
+                        <b>AI Confidence:</b>
+                        {ai_confidence}
+                    </li>
+                </ul>
 
-    </div>
-    """, unsafe_allow_html=True)
+                <br>
+
+                <b>Analysis Coverage</b>
+
+                <ul>
+                    <li>Business transaction failures</li>
+                    <li>Downstream/API failures</li>
+                    <li>HTTP and validation issues</li>
+                    <li>Authentication and security failures</li>
+                    <li>Infrastructure instability</li>
+                    <li>Recurring production patterns</li>
+                    <li>Suggested remediation actions</li>
+                </ul>
+
+            </div>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+    )

@@ -13,11 +13,17 @@ def render_severity_banner(severity):
 
     severity_text = severity.lower()
 
-    if "high" in severity_text:
+    if any(word in severity_text for word in [
+        "critical",
+        "high"
+    ]):
 
         st.error(severity)
 
-    elif "medium" in severity_text:
+    elif any(word in severity_text for word in [
+        "medium",
+        "moderate"
+    ]):
 
         st.warning(severity)
 
@@ -50,17 +56,12 @@ margin-bottom: 1.2rem;
 {title}
 </h3>
 
-<div style="
-line-height:1.7;
-font-size:0.97rem;
-">
-{content}
-</div>
-
 </div>
 """,
         unsafe_allow_html=True
     )
+
+    st.write(content)
 
 
 # ---------------------------------------------------
@@ -68,6 +69,18 @@ font-size:0.97rem;
 # ---------------------------------------------------
 
 def render_analysis_result(final_result):
+
+    # ---------------------------------------------------
+    # EMPTY RESPONSE SAFETY
+    # ---------------------------------------------------
+
+    if not final_result.strip():
+
+        st.warning(
+            "AI returned an empty analysis report."
+        )
+
+        return
 
     parsed_report = parse_analysis_report(
         final_result
@@ -146,7 +159,7 @@ def render_analysis_result(final_result):
             "Suspicious Patterns"
         ):
 
-            st.markdown(
+            st.write(
                 suspicious_patterns
             )
 
@@ -178,6 +191,20 @@ def render_analysis_result(final_result):
             "Final Recommendations"
         ):
 
-            st.markdown(
+            st.write(
                 recommendations
             )
+
+    # ---------------------------------------------------
+    # FALLBACK RENDERING
+    # ---------------------------------------------------
+
+    if not any(parsed_report.values()):
+
+        st.markdown("---")
+
+        st.markdown(
+            "### Raw AI Response"
+        )
+
+        st.write(final_result)

@@ -10,17 +10,22 @@ def render_category_card(
     count
 ):
 
-    st.markdown(f"""
-    <div class="analysis-card">
+    st.markdown(
+        f"""
+        <div class="analysis-card">
 
-        <div class="analysis-title">
-            {category}
+            <div class="analysis-title">
+                {category}
+            </div>
+
+            <div class="kpi-value">
+                {count}
+            </div>
+
         </div>
-
-        <h2>{count}</h2>
-
-    </div>
-    """, unsafe_allow_html=True)
+        """,
+        unsafe_allow_html=True
+    )
 
 
 # ---------------------------------------------------
@@ -32,7 +37,7 @@ def render_error_analytics(
 ):
 
     st.markdown(
-        "## Error Analytics"
+        "## Incident Intelligence"
     )
 
     cols = st.columns(3)

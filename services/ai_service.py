@@ -15,8 +15,9 @@ api_key = os.getenv(
 )
 
 MODEL_NAME = (
-   "deepseek/deepseek-v4-flash:free"
+   #"deepseek/deepseek-v4-flash:free"
    #"qwen/qwen3-next-80b-a3b-instruct:free"
+   "nvidia/nemotron-3-nano-30b-a3b:free"
 )
 
 client = OpenAI(

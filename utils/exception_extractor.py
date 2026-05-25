@@ -1,6 +1,5 @@
 import re
 
-
 # -----------------------------------
 # HIGH PRIORITY FAILURE PATTERNS
 # -----------------------------------
@@ -13,11 +12,11 @@ HIGH_PRIORITY_PATTERNS = [
     r"stack trace",
 
     # Generic failures
-    r"failed",
-    r"failure",
-    r"fatal",
-    r"critical",
-    r"error",
+    r"\bfailed\b",
+    r"\bfailure\b",
+    r"\bfatal\b",
+    r"\bcritical\b",
+    r"\berror\b",
 
     # HTTP failures
     r"\b400\b",
@@ -25,6 +24,8 @@ HIGH_PRIORITY_PATTERNS = [
     r"\b403\b",
     r"\b404\b",
     r"\b408\b",
+    r"\b409\b",
+    r"\b422\b",
     r"\b429\b",
     r"\b500\b",
     r"\b502\b",
@@ -85,7 +86,6 @@ HIGH_PRIORITY_PATTERNS = [
     r"network error"
 ]
 
-
 # -----------------------------------
 # LOW PRIORITY / NOISE PATTERNS
 # -----------------------------------
@@ -99,9 +99,10 @@ LOW_PRIORITY_PATTERNS = [
     r"found in cache",
     r"token found",
     r"health check",
-    r"heartbeat"
+    r"heartbeat",
+    r"debug",
+    r"trace"
 ]
-
 
 # -----------------------------------
 # MAIN EXTRACTION FUNCTION
@@ -110,6 +111,8 @@ LOW_PRIORITY_PATTERNS = [
 def extract_important_logs(log_text):
 
     important_lines = []
+
+    seen_lines = set()
 
     lines = log_text.splitlines()
 
@@ -141,7 +144,22 @@ def extract_important_logs(log_text):
 
             if re.search(pattern, line_lower):
 
-                important_lines.append(line)
+                cleaned_line = line.strip()
+
+                # -----------------------------
+                # DEDUPLICATION
+                # -----------------------------
+
+                if cleaned_line not in seen_lines:
+
+                    important_lines.append(
+                        cleaned_line
+                    )
+
+                    seen_lines.add(
+                        cleaned_line
+                    )
+
                 break
 
     return "\n".join(important_lines)
