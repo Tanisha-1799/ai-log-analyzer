@@ -1,19 +1,32 @@
 # AI Log Analyzer
 
-AI Log Analyzer is a privacy-aware AI debugging assistant designed to help developers, QA engineers, DevOps teams, and support engineers analyze application logs faster using Large Language Models (LLMs).
+AI-powered log intelligence and incident investigation platform for developers, QA teams, and DevOps engineers.
 
-The tool intelligently analyzes log files to identify:
-- Errors and exceptions
-- Root causes
-- Failure patterns
-- Severity levels
-- Suggested fixes
-- Important debugging insights
+Analyze production logs using LLMs with:
+- privacy-aware sanitization
+- intelligent preprocessing
+- structured incident summaries
+- root cause analysis
+- VS Code integration
+
+---
+
+## Key Features
+
+✅ AI-powered incident analysis  
+✅ Privacy-first log sanitization  
+✅ Smart log chunking  
+✅ Structured debugging insights  
+✅ VS Code extension support  
+✅ Exportable incident reports  
 
 The long-term vision is to evolve AI Log Analyzer into:
 > An AI-powered incident investigation and developer productivity tool.
 
 ---
+# System Architecture
+![Architecture Flow](Architecture_flow/Architecture_flow.png)
+
 
 # Why This Project Exists
 
@@ -256,7 +269,7 @@ ai-log-analyzer/
 │   ├── ui_warnings.py
 │   └── upload_section.py
 │
-├── config
+├── config/
 ├── services/
 │   ├── ai_service.py
 │   ├── analysis_service.py
@@ -289,6 +302,22 @@ ai-log-analyzer/
 ...
 ```
 ---
+# VS Code Extension Workflow
+
+The VS Code extension allows developers to:
+
+1. Select logs directly inside VS Code
+2. Launch AI Log Analyzer instantly
+3. Auto-populate logs into the analyzer
+4. Generate AI-powered debugging insights
+
+This creates a faster developer workflow for:
+- production debugging
+- API failure analysis
+- incident investigation
+- stack trace analysis
+
+
 
 # Development Philosophy
 
@@ -360,6 +389,21 @@ This aligns with real-world developer and production-support workflows.
 
 
 ---
+# VS Code Extension Workflow
+
+The VS Code extension allows developers to:
+
+1. Select logs directly inside VS Code
+2. Launch AI Log Analyzer instantly
+3. Auto-populate logs into the analyzer
+4. Generate AI-powered debugging insights
+
+This creates a faster developer workflow for:
+- production debugging
+- API failure analysis
+- incident investigation
+- stack trace analysis
+
 # Demo Scenarios
 
 Sample logs are included for:
@@ -373,11 +417,19 @@ These examples demonstrate the AI analysis workflow and incident reporting capab
 
 # Screenshots
 
-Coming soon:
 - dashboard screenshots
 - AI incident reports
 - analytics UI
 - VS Code extension demo
+Have a look on the Tool's screenshots:
+![Project Workings](Tool_overview_Images/Input_Header_section.png)
+![Project Workings](Tool_overview_Images/Types_of_error.png)
+![Project Workings](Tool_overview_Images/Incident_Highlights.png)
+![Project Workings](Tool_overview_Images/AI_Analysis.png)
+![Project Workings](Tool_overview_Images/Executive_Summary.png)
+![Project Workings](Tool_overview_Images/Final_Summary.png)
+
+![Project Demo](Demo/Demo.mp4)
 
 
 # Learning Goals Behind This Project

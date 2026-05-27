@@ -1,4 +1,5 @@
 import streamlit as st
+import html
 
 
 # ---------------------------------------------------
@@ -10,20 +11,25 @@ def render_category_card(
     count
 ):
 
+    safe_category = html.escape(str(category))
+    safe_count = html.escape(str(count))
+
+    card_html = f"""
+<div class="analysis-card">
+
+<div class="analysis-title">
+    {safe_category}
+</div>
+
+<div class="kpi-value">
+    {safe_count}
+</div>
+
+</div>
+"""
+
     st.markdown(
-        f"""
-        <div class="analysis-card">
-
-            <div class="analysis-title">
-                {category}
-            </div>
-
-            <div class="kpi-value">
-                {count}
-            </div>
-
-        </div>
-        """,
+        card_html,
         unsafe_allow_html=True
     )
 
@@ -39,6 +45,14 @@ def render_error_analytics(
     st.markdown(
         "## Incident Intelligence"
     )
+
+    if not category_counts:
+
+        st.info(
+            "No incident analytics available."
+        )
+
+        return
 
     cols = st.columns(3)
 

@@ -1,4 +1,5 @@
 import streamlit as st
+import html
 
 from utils.report_parser import (
     parse_analysis_report
@@ -11,7 +12,7 @@ from utils.report_parser import (
 
 def render_severity_banner(severity):
 
-    severity_text = severity.lower()
+    severity_text = str(severity).lower()
 
     if any(word in severity_text for word in [
         "critical",
@@ -38,30 +39,46 @@ def render_card(
     border_color="#4682B4"
 ):
 
-    if not content.strip():
+    if not str(content).strip():
 
         return
 
-    st.markdown(
-        f"""
+    safe_title = html.escape(str(title))
+    safe_content = html.escape(str(content))
+    safe_border = html.escape(str(border_color))
+
+    card_html = f"""
 <div style="
-padding: 1.2rem;
-border-radius: 12px;
-border-left: 5px solid {border_color};
-background-color: rgba(255,255,255,0.03);
-margin-bottom: 1.2rem;
+    padding:1.2rem;
+    border-radius:12px;
+    border-left:5px solid {safe_border};
+    background-color:rgba(255,255,255,0.03);
+    margin-bottom:1.2rem;
 ">
 
-<h3 style="margin-top:0;">
-{title}
+<h3 style="
+    margin-top:0;
+    margin-bottom:1rem;
+">
+    {safe_title}
 </h3>
 
+<div style="
+    line-height:1.7;
+    font-size:1rem;
+    white-space:pre-wrap;
+    word-break:break-word;
+">
+    {safe_content}
 </div>
-""",
+
+</div>
+"""
+
+    st.markdown(
+        card_html,
         unsafe_allow_html=True
     )
-
-    st.write(content)
 
 
 # ---------------------------------------------------
@@ -74,7 +91,7 @@ def render_analysis_result(final_result):
     # EMPTY RESPONSE SAFETY
     # ---------------------------------------------------
 
-    if not final_result.strip():
+    if not str(final_result).strip():
 
         st.warning(
             "AI returned an empty analysis report."
